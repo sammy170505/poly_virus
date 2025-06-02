@@ -3,6 +3,7 @@ from pynput.keyboard import Key, Listener
 from pathlib import Path
 import logging
 
+# ---------- Paths ----------
 ROOT = Path(__file__).resolve().parent
 BOX = ROOT/ "sandbox"
 BOX.mkdir(exist_ok=True)                      # ensure sandbox/ exists
