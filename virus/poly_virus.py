@@ -60,6 +60,6 @@ subprocess.run(["python3", str(clone_path)])
 
 # ---------- Log mutation ----------
 with open(BOX / "mutation.log", "a") as log:
-    log.write(f"[{datetime.now()}] Spawned {clone_name}  size={clone_path.stat().st_size}\n")
+    log.write(f"[{datetime.now()}] Spawned {clone_name}  size = {clone_path.stat().st_size}\n")
 
 print(f"Spawned and executed clone → {clone_path}")
