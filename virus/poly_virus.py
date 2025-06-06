@@ -17,7 +17,7 @@ BOX.mkdir(exist_ok=True)
 
 # -------------- Load XOR key -----------------
 if not KEY_PATH.exists():
-    raise RuntimeError("Missing xor_key.txt – create it and keep it out of Git!")
+    raise RuntimeError("Missing xor_key.txt!")
 
 key_bytes = KEY_PATH.read_text().strip().encode()
 
