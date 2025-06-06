@@ -54,7 +54,7 @@ clone_path = BOX / clone_name
 clone_path.write_text(stub)
 
 # ---------- Execute the clone ----------
-subprocess.run(["python3", str(clone_path)])
+#subprocess.run(["python3", str(clone_path)])
 
 # ---------- Log mutation ----------
 with open(BOX / "mutation.log", "a") as log:
