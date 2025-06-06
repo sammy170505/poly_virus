@@ -4,8 +4,9 @@ from pathlib import Path
 import logging
 
 # ---------- Paths ----------
-ROOT = Path(__file__).resolve().parent
-BOX = ROOT/ "sandbox"
+# ROOT = Path(__file__).resolve().parent
+# BOX = ROOT/ "sandbox"
+BOX = Path("/home/kali/Desktop/poly_virus/sandbox")
 BOX.mkdir(exist_ok=True)                      # ensure sandbox/ exists
 
 # ---------- Configure logging ----------
@@ -23,7 +24,7 @@ logging.basicConfig(
 
 # -------------------- 30-second timer --------------------
 START_TIME = datetime.now()
-STOP_TIME  = START_TIME + timedelta(seconds=30)   # when we auto-exit
+STOP_TIME  = START_TIME + timedelta(seconds=15)   # when we auto-exit
 
 # ---------- Callback for each key press ----------
 def on_press(key):
