@@ -3,3 +3,4 @@ __pycache__/
 venv/
 notes*.md
 detection/entropy_results.json
+xor_key.txt

