@@ -45,4 +45,4 @@ with Listener(on_press=on_press) as listener:
 # ---------- High-level run marker ----------
 # After the listener exits, add one summary line.
 with (BOX / "infected.log").open("a") as f:
-    f.write(f"[{datetime.now()}] Keylogger captured 30 s of input\n")
+    f.write(f"[{datetime.now()}] Keylogger captured 15 s of input\n")

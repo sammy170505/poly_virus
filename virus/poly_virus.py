@@ -57,8 +57,10 @@ stub = textwrap.dedent(f"""
     tmp.close()
 
     # ------- Import and execute the payload -------
+    # Avoid using exec() or eval(), which are easier to catch
     spec = importlib.util.spec_from_file_location("pl", tmp.name)
     mod  = importlib.util.module_from_spec(spec)
+    # Similar to running import, but at runtime and from a specific file.
     spec.loader.exec_module(mod)
 
     # -------- Clean up --------

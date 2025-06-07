@@ -1,0 +1,2 @@
+pynput==1.7.6     # keyboard hook for the key-logger payload
+yara-python==4.5.4  # yara rules for the malware detection payload
