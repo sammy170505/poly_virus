@@ -19,6 +19,8 @@ BOX  = ROOT / "sandbox"
 THRESHOLD = 4.5
 #This will match 'exec(base64' in any case
 PATTERN = re.compile(r'exec\s*\(\s*base64', re.IGNORECASE)
+DETECTION_DIR = ROOT / "detection"
+RESULT_FILE   = DETECTION_DIR / "hybrid_results.json"
 
 # ----- YARA rules -----
 
@@ -64,3 +66,24 @@ def detect_hybrid(path: Path) -> dict:
             "file": path.name,
             "error": str(e)
         }
+# ----- Main function -----
+def main() -> None:
+    DETECTION_DIR.mkdir(exist_ok=True)
+    results = [detect_hybrid(f) for f in BOX.glob("*.py")]
+        # Save JSON report
+    with open(RESULT_FILE, "w") as fp:
+        json.dump(results, fp, indent=4)
+
+    # Print in table format
+    for r in results:
+        if "error" in r:
+            print(f"[ERROR] {r['file']}: {r['error']}")
+            continue
+        status = "Suspicious" if r["suspicious"] else "Clean"
+        yara_str = '|'.join(r['yara_matches']) or 'None'
+        print(f"{r['file']:20} | Ent: {r['entropy']:4} | execB64: {str(r['pattern_hit']):5} "
+              f"| YARA:{yara_str:25} | {status}")
+        
+if __name__ == "__main__":
+    main()
+
