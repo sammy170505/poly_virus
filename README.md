@@ -61,3 +61,53 @@ poly_virus/
 - **Consolidated JSON report**
 > **Note:** YARA is a signature-based static analysis tool, not a hybrid or anomaly-based method.  
 > The “hybrid” detector in this project refers to the combination of YARA signatures, entropy statistics, and regex heuristics in a unified tool.
+
+## Findings: Why Hybrid Detection Wins
+
+During testing, a clone (`itaspbmx.py`) appeared **clean** to the static detector but **suspicious** to the hybrid detector, thanks to YARA rules:
+
+<details>
+<summary>Click to view screenshot</summary>
+
+![Comparison Example](Hybrid vs Static.png)
+
+</details>
+
+---
+
+## Usage
+
+1. **Install dependencies**
+  ```bash
+  pip install pynput yara-python
+  ```
+
+2. **Create a secret XOR key**
+  ```bash
+  echo 'x9Wq3pZk7R2sUd4f' > xor_key.txt
+  ```
+
+3. **Run the polymorphic engine**
+  ```bash
+  python3 virus/poly_virus.py
+  ```
+
+4. **Scan with the static detector**
+  ```bash
+  python3 detection/detect_entropy.py
+  ```
+
+5. **Scan with the hybrid detector**
+  ```bash
+  python3 detection/hybrid_detector.py
+  ```
+
+---
+
+## Key Takeaways
+
+- Simple detectors can be fooled; layered analysis is essential.
+- Polymorphic and encrypted malware requires hybrid defense.
+- Blue-teamers need both broad heuristics and deep signature matching.
+
+---
